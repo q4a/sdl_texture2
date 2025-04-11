@@ -1,0 +1,25 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [d3dx9_cube, sdl_d3d9_cube, sdl_pure_triangle]
+        configuration: [Debug, Release]
+    steps:
+    - uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Build
+      run: |
+        cd ${{ matrix.folder }}
+        cmake --preset='ninja-${{ matrix.configuration }}'
+        cmake --build --preset='${{ matrix.configuration }}'
+    - name: Check file
+      run: |
+        dir ${{ matrix.folder }}\build\ninja-${{ matrix.configuration }}\bin
