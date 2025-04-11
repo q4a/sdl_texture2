@@ -182,10 +182,10 @@ bool Setup()
 	D3DLIGHT9 light;
 	memset(&light, 0, sizeof(light));
 	light.Type      = D3DLIGHT_DIRECTIONAL;
-	light.Ambient   = D3DCOLORVALUE(0.8f, 0.8f, 0.8f, 1.0f);
-	light.Diffuse   = D3DCOLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Specular  = D3DCOLORVALUE(0.2f, 0.2f, 0.2f, 1.0f);
-	light.Direction = D3DVECTOR(1.0f, -1.0f, 0.0f);
+	light.Ambient   = D3DCOLORVALUE{ 0.8f, 0.8f, 0.8f, 1.0f };
+	light.Diffuse   = D3DCOLORVALUE{ 1.0f, 1.0f, 1.0f, 1.0f };
+	light.Specular  = D3DCOLORVALUE{ 0.2f, 0.2f, 0.2f, 1.0f };
+	light.Direction = D3DVECTOR{ 1.0f, -1.0f, 0.0f };
 	Device->SetLight(0, &light);
 	Device->LightEnable(0, true);
 
@@ -198,12 +198,12 @@ bool Setup()
 #ifdef UseCubeTexture
 	CreateCubeTextureFromFile(
 		Device,
-		"textures/earth-cubemap.dds",
+		"earth-cubemap.dds",
 		&Tex);
 #else
 	CreateTextureFromFile(
 		Device,
-		"textures/cursor.dds",
+		"cursor.dds",
 		&Tex);
 #endif // UseCubeTexture
 #endif // UseTexture
@@ -316,7 +316,7 @@ int main(int argc, char* argv[]) {
 	initSDL();
 
 	//Creating the context for SDL2.
-	SDL_Window* Window = createWindowContext("Hello Texture!");
+	SDL_Window* Window = createWindowContext("Hello cube!");
 
 	if (!d3d::InitD3D(Window,
 		Width, Height, true, D3DDEVTYPE_HAL, &Device))
