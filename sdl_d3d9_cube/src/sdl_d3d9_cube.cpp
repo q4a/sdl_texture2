@@ -3,6 +3,7 @@
 #include "cube.h"
 #include "vertex.h"
 
+#include <iostream>
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>
@@ -308,9 +309,9 @@ SDL_Window* createWindowContext(std::string title) {
 	Window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, flags);
 	uint32_t extensionCount = 0;
 	if (!SDL_Vulkan_GetInstanceExtensions(nullptr, &extensionCount, nullptr))
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), nullptr);
+		std::cout << "SDL_Vulkan_GetInstanceExtensions error: " << SDL_GetError() << std::endl;
 	else
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "extensionCount", std::to_string(extensionCount).c_str(), nullptr);
+		std::cout << "SDL_Vulkan_GetInstanceExtensions works! extensionCount==" << std::to_string(extensionCount) << std::endl;
 
 	//Returning the newly creted Window context.
 	return Window;

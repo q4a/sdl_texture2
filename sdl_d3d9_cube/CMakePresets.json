@@ -7,7 +7,8 @@
   },
   "buildPresets": [
     { "name": "Release", "configurePreset": "ninja-Release", "configuration": "Release" },
-    { "name": "Debug", "configurePreset": "ninja-Debug", "configuration": "Debug" }
+    { "name": "Debug-DXVK-2.6.1", "configurePreset": "ninja-Debug-DXVK-2.6.1", "configuration": "Debug" },
+    { "name": "Debug-DXVK-2.3.1", "configurePreset": "ninja-Debug-DXVK-2.3.1", "configuration": "Debug" }
   ],
   "configurePresets": [
     {
@@ -19,11 +20,19 @@
       }
     },
     {
-      "name": "ninja-Debug",
+      "name": "ninja-Debug-DXVK-2.6.1",
       "generator": "Ninja Multi-Config",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug", "DXVK_TAG": "v2.6.1"
+      }
+    },
+    {
+      "name": "ninja-Debug-DXVK-2.3.1",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug", "DXVK_TAG": "v2.3.1"
       }
     }
   ]

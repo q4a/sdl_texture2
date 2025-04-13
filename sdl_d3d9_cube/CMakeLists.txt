@@ -6,6 +6,10 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/../cmake/sdl2.cmake")
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
 endif()
+if (NOT DXVK_TAG)
+    set(DXVK_TAG "v2.6.1" CACHE STRING "" FORCE)
+endif()
+message("DXVK_TAG=${DXVK_TAG}")
 
 ### Set up output paths
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
@@ -83,8 +87,7 @@ else()
         message("Using DXVK for D3D9 API")
         ExternalProject_Add(dxvk
             GIT_REPOSITORY    https://github.com/doitsujin/dxvk
-            #GIT_TAG           v2.3.1
-            GIT_TAG           v2.6.1
+            GIT_TAG           ${DXVK_TAG}
             GIT_SHALLOW       ON
             BUILD_ALWAYS      OFF
             CONFIGURE_HANDLED_BY_BUILD ON
