@@ -8,8 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        folder: [d3dx9_cube, sdl_d3d9_cube, sdl_pure_triangle]
+        folder: [d3dx9_cube, sdl_pure_triangle]
         configuration: [Debug, Release]
+        include:
+          - folder: sdl_d3d9_cube
+            configuration: Debug-DXVK-2.6.1
     steps:
     - uses: actions/checkout@main
       with:
@@ -23,3 +26,34 @@ jobs:
     - name: Check file
       run: |
         dir ${{ matrix.folder }}\build\ninja-${{ matrix.configuration }}\bin
+
+  linux:
+    name: linux cmake ${{ matrix.configuration }} ${{ matrix.os.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [sdl_d3d9_cube]
+        configuration: [Debug-DXVK-2.3.1, Debug-DXVK-2.6.1]
+        os:
+          - platform: x64
+            ci: ubuntu-24.04
+    runs-on: ${{ matrix.os.ci }}
+    steps:
+    - uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+    - name: Install libs
+      run: |
+        sudo apt-get update && sudo apt-get install meson ninja-build mesa-vulkan-drivers
+    - name: Build
+      run: |
+        export CC=gcc && export CXX=g++
+        ${CXX} --version && cmake --version
+        cd ${{ matrix.folder }}
+        cmake --preset='ninja-${{ matrix.configuration }}'
+        cmake --build --preset='${{ matrix.configuration }}'
+    - name: Test
+      run: |
+        cd ${{ matrix.folder }}/build/ninja-${{ matrix.configuration }}/bin
+        ls -la
+        VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json DXVK_WSI_DRIVER=SDL2 ./${{ matrix.folder }}
