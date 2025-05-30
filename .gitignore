@@ -2,5 +2,6 @@
 *.log
 *.user
 .vs
-build
-cmake-build-*
+/*/build
+/*/cmake-build-*
+/*/out
