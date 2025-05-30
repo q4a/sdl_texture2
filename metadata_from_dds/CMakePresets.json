@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": { "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}" }
+    },
+    {
+      "name": "Debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" },
+      "hidden": true
+    },
+    {
+      "name": "Release",
+      "cacheVariables":
+      {
+          "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+          "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true
+      },
+      "hidden": true
+    },
+    {
+      "name": "VCPKG",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        }
+      },
+      "hidden": true
+    },
+    { "name": "Debug-VCPKG",   "description": "Suitable for Linux (Debug) using VCPKG", "inherits": [ "base", "Debug", "VCPKG" ] },
+    { "name": "Release-VCPKG", "description": "Suitable for Linux (Release) using VCPKG", "inherits": [ "base", "Release", "VCPKG" ] }
+  ]
+}
