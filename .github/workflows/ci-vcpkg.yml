@@ -1,0 +1,53 @@
+name: CI-VCPKG
+
+on: [push, pull_request]
+
+jobs:
+  job:
+    name: '${{ matrix.os }} ${{ matrix.folder }} ${{ matrix.cfg }}'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [metadata_from_dds]
+        cfg: [Debug, Release]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-latest]
+    steps:
+    - uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: Install VCPKG libs
+      run: |
+        which vcpkg
+        vcpkg install directxtex
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: runner.os == 'Windows'
+    - name: Build on Windows
+      if: runner.os == 'Windows'
+      run: |
+        $env:VCPKG_ROOT="C:\vcpkg"
+        cd ${{ matrix.folder }}
+        cmake --preset=${{ matrix.cfg }}-VCPKG
+        cmake --build out/build/${{ matrix.cfg }}-VCPKG
+        dumpbin /headers out/build/${{ matrix.cfg }}-VCPKG/bin/${{ matrix.folder }}.exe | Select -First 25
+
+    - name: Build on Linux
+      if: runner.os != 'Windows'
+      run: |
+        export VCPKG_ROOT=/usr/local/share/vcpkg
+        cd ${{ matrix.folder }}
+        cmake --preset=${{ matrix.cfg }}-VCPKG
+        cmake --build out/build/${{ matrix.cfg }}-VCPKG
+        file out/build/${{ matrix.cfg }}-VCPKG/bin/${{ matrix.folder }}
+
+    - name: Tests for metadata_from_dds
+      if: ${{ matrix.folder }} == 'metadata_from_dds'
+      run: |
+        cd ${{ matrix.folder }}/out/build/${{ matrix.cfg }}-VCPKG/bin
+        echo ../../../../../textures/skybox-dds/top.dds | ./metadata_from_dds
+        echo ../../../../../textures/earth-cubemap.dds | ./metadata_from_dds
+        echo ../../../../../textures/cursor.dds | ./metadata_from_dds
+        echo ../../../../../textures/chess4.dds | ./metadata_from_dds
